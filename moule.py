@@ -31,8 +31,8 @@ for element in product_elements:
         ]
 
         link = element.xpath('.//span[@class="ty-nowrap ty-stars"]//@href')
-        product_html = session.get(link[0], headers=header).text
-        product_page = lxml.html.document_fromstring(product_html)
+        html_product = session.get(link[0], headers=header).text
+        product_page = lxml.html.document_fromstring(html_product)
         rating = product_page.xpath(
             './/div[@itemprop="aggregateRating"]/meta[@itemprop="ratingValue"]/@content'
         )
@@ -50,18 +50,24 @@ for element in product_elements:
         reviews = [it.replace("\r\n", "") for it in reviews]
 
         product_data = {
-            "name": name,
-            "price_roz": price_roz,
-            "price_opt": price_opt,
-            "rating": rating,
-            "review_count": reviewCount,
-            "store_count": store_count,
-            "reviews": reviews,
+            "Название": name,
+            "Цена розница": price_roz,
+            "Цена оптовая": price_opt,
+            "Рейтинг": rating,
+            "Количество оценок": reviewCount,
+            "Количество магазинов с товаром": store_count,
+            "Отзывы": reviews,
         }
         products.append(product_data)
 
     except Exception as e:
         print(e)  # Отладочное сообщение
 
-for prod in products:
-    print(prod)
+html_user = session.get("https://siriust.ru/profiles-update/", headers=header).text
+tree = lxml.html.document_fromstring(html_user)
+
+userMail = tree.xpath('//*[@id="email"]/@value')
+userName = tree.xpath('//*[@id="elm_15"]/@value')
+userSurname = tree.xpath('//*[@id="elm_17"]/@value')
+userCity = tree.xpath('//*[@id="elm_23"]/@value')
+
